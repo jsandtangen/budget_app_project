@@ -1,5 +1,3 @@
-# spend_chart.py
-
 def create_spend_chart(categories):
     total_spent = 0
     category_spent = []
