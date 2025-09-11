@@ -1,0 +1,38 @@
+# spend_chart.py
+
+def create_spend_chart(categories):
+    total_spent = 0
+    category_spent = []
+
+    # Calculate total expenditure and percentages
+    total_spent = sum(-item['amount'] for category in categories for item in category.ledger if item['amount'] < 0)
+    for category in categories:
+        spent = sum(-item['amount'] for item in category.ledger if item['amount'] < 0)
+        category_spent.append(spent)
+    
+    percentages = [(spent / total_spent) * 100 for spent in category_spent]
+    # Round down to the nearest 10
+    percentages = [int(percentage / 10) * 10 for percentage in percentages]
+
+    # Construct the chart header
+    chart = "Percentage spent by category\n"
+    for i in range(100, -1, -10):
+        chart += f"{i:>3}|"
+        for percentage in percentages:
+            chart += " o " if percentage >= i else "   "
+        chart += " \n"
+
+    # Add the x-axis
+    chart += "    " + "-" * (len(categories) * 3 + 1) + "\n"
+
+    # Prepare the category names vertically
+    max_length = max(len(category.name) for category in categories)
+    category_names = [category.name.ljust(max_length) for category in categories]
+
+    for i in range(max_length):
+        chart += "     "  # Indent for the left margin
+        for name in category_names:
+            chart += name[i] + "  "  # Add each character with proper spacing
+        chart += "\n"
+
+    return chart.rstrip("\n")  # Remove the trailing newline character
